@@ -4,26 +4,17 @@ import java.util.EmptyStackException;
 
 public class MyStack {
 
-    private boolean isEmpty;
     private  String [] stackOfStrings;
     private int numberOfElements;
 
-    private int capacity;
+    private int arrayCapacity;
 
 
-    public MyStack(int capacity){
-        isEmpty = true;
-        numberOfElements = 0;
-        stackOfStrings = new String[capacity];
-
+    public MyStack(int arrayCapacity){
+        stackOfStrings = new String[arrayCapacity];
     }
     public boolean stackIsEmpty() {
-        if (numberOfElements == 0) {
-            return isEmpty = true;
-        }
-        else {
-            return isEmpty = false;
-        }
+        return numberOfElements == 0;
     }
 
 
@@ -31,17 +22,22 @@ public class MyStack {
         if (numberOfElements == 0) {
             throw new EmptyStackException();
         }
-        else {
-            return stackOfStrings[--numberOfElements];
-
-        }
+        return stackOfStrings[numberOfElements--];
     }
 
-    public void push(String adidas) {
+    public void push(String ArrayItems) {
+//        if (numberOfElements > arrayCapacity){
+//            throw new StackOverflowException("Stack At Maximum Capacity");
+//        }
+        stackOfStrings[numberOfElements] = ArrayItems;
         numberOfElements++;
     }
 
     public int size() {
         return numberOfElements;
+    }
+
+    public String peek() {
+        return stackOfStrings[numberOfElements];
     }
 }

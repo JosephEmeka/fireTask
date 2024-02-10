@@ -51,41 +51,68 @@ public class MyStackTest {
 
     @Test
 
-    public void testThatElementPushedIntoStackIsTheLastElementInStack() {
+    public void testThatIfIPushedFourElementAndPopOne_TheThirdElementPushedIntoStackIsNowTheLastElementInStack() {
         stringStack.push("Adidas");
         stringStack.push("Nike");
-        assertEquals("Nike",  stringStack.pop());
-
-
-    }
-
-    @Test
-    public void testThatElementsPlacedBeforeTheLastElementInStackCannotPopped() {
-//        String shoeName = "Adidas";
-//        String secondShoeName = "Nike";
-//        stringStack.pop();
-
-
-    }
-
-    @Test
-    public void testThatElementsCannotBePlacedPushedIntoPositionsBeforeTheLastElementInStack() {
-//        String shoeName = "Adidas";
-//        String secondShoeName = "Nike";
-//        stringStack.pop();
+        stringStack.push("Adidas");
+        stringStack.push("Crocs");
+        assertEquals(4,stringStack.size());
+        stringStack.pop();
+        assertEquals(3,stringStack.size());
 
 
     }
 
     @Test
     public void testThatLastNameInStackCanBePeeked() {
-//        String shoeName = "Adidas";
-//        String secondShoeName = "Nike";
-//        stringStack.pop();
-//    }
+        stringStack.push("Adidas");
+        stringStack.push("Nike");
+        stringStack.push("Game");
+        stringStack.push("Cohen");
+        stringStack.pop();
+        //assertEquals("Game",stringStack.peek());
+        assertEquals(3,stringStack.size());
+        //assertEquals("Adidas",stringStack.peek());
 
     }
 
+
+    @Test
+    public void testThatLastElementInStackCanBePeeked() {
+        stringStack.push("Adidas");
+        stringStack.push("Nike");
+        stringStack.push("Game");
+        stringStack.push("Cohen");
+        stringStack.pop();
+        assertEquals("Game",stringStack.peek());
+        assertEquals(3,stringStack.size());
+        assertEquals("Adidas",stringStack.peek());
+
+    }
+
+    @Test
+    public void testThatEmptyArrayPeeked_StackThrowsIllegalArgumentException() {
+        stringStack.push("Adidas");
+        stringStack.push("Nike");
+        stringStack.push("Game");
+        stringStack.push("Cohen");
+        stringStack.pop();
+        //assertEquals("Game",stringStack.peek());
+        assertEquals(3,stringStack.size());
+        //assertEquals("Adidas",stringStack.peek());
+
+    }
+
+    @Test
+    public void testThatWhenElementIsPushIntoAFullCapacityStack_StackThrowsIllegalArgumentException() {
+        stringStack.push("Adidas");
+        stringStack.push("Nike");
+        stringStack.push("Game");
+        stringStack.push("Cohen");
+        stringStack.push("Bike");
+        assertEquals(5,stringStack.size());
+        assertThrows(StackOverflowError.class, () -> stringStack.push("Java"));
+    }
 }
 
 

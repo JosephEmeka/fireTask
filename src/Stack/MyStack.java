@@ -2,21 +2,32 @@ package Stack;
 
 public class MyStack {
 
-    private static boolean isEmpty;
+    private boolean isEmpty;
+    private  String [] stackOfStrings;
+    private int size;
 
-    public MyStack(){
+    private int capacity;
+
+
+    public MyStack(int capacity){
         isEmpty = true;
+        stackOfStrings = new String[capacity];
+
     }
-    public static boolean stackIsEmpty(MyStack stackOfString) {
+    public boolean stackIsEmpty() {
         return isEmpty;
     }
 
-    public static boolean add(String shoeName) {
+    public void getSizeOfStack(int [] stackArrays){
+    }
+
+    public boolean pop(String shoeName) {
         return isEmpty = false;
     }
 
 
-    public static void pop() {
-
+    public void pop() {
+        getSizeOfStack()
+        if
     }
 }

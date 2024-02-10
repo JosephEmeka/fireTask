@@ -1,42 +1,42 @@
 import Stack.MyStack;
 import org.junit.jupiter.api.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-
 public class MyStackTest {
-    private MyStack stackOfString;
+    private MyStack stringStack;
 
     @BeforeEach
     public void doThisBeforeAll(){
-        
-        stackOfString = new MyStack();
+         stringStack = new MyStack(4);
     }
 
     @Test
     public void testThatStackIsEmpty(){
-        assertTrue(MyStack.stackIsEmpty(stackOfString));
+        assertTrue(stringStack.stackIsEmpty());
     }
 
     @Test
-    public void testThatWhenEmptyStackIsPopped_StackReturnsEmptyStack(){
-        assertTrue(MyStack.stackIsEmpty(stackOfString));
-        MyStack.pop();
-
+    public void testThatWhenEmptyStackIsPopped_ThrowsOutOfBoundException(){
+        assertTrue(stringStack.stackIsEmpty());
+        stringStack.pop();
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> stringStack.pop());
 
 
     }
     @Test
     public void testThatWhenAnElementIsAddedInStack_StackIsNotEmpty(){
+        //MyStack stackOfString = new MyStack();
         String shoeName = "Adidas";
-        MyStack.add(shoeName);
-        assertFalse(MyStack.stackIsEmpty(stackOfString));
+        stringStack.pop(shoeName);
+        assertFalse(stringStack.stackIsEmpty());
     }
 
     @Test
     public void testThatMoreThanOneElementCanBePushedIntoStack_StackNotEmpty(){
         String shoeName = "Adidas";
         String secondShoeName = "Nike";
-        assertTrue(MyStack.add(shoeName));
+        stringStack.pop(shoeName);
 
     }
 
@@ -45,8 +45,8 @@ public class MyStackTest {
     public void testThatElementCanBePoppedOutOfStack_StackNotEmpty(){
         String shoeName = "Adidas";
         String secondShoeName = "Nike";
-        assertTrue(MyStack.add(shoeName));
-        MyStack.pop();
+        stringStack.pop(shoeName);
+        stringStack.pop();
 
     }
 
@@ -61,8 +61,8 @@ public class MyStackTest {
     public void testThatElementsPlacedBeforeTheLastElementInStackCannotPopped(){
         String shoeName = "Adidas";
         String secondShoeName = "Nike";
-        assertTrue(MyStack.add(shoeName));
-        MyStack.pop();
+        stringStack.pop(shoeName);
+        stringStack.pop();
 
     }
 
@@ -70,17 +70,17 @@ public class MyStackTest {
     public void testThatElementsCannotBePlacedPushedIntoPositionsBeforeTheLastElementInStack(){
         String shoeName = "Adidas";
         String secondShoeName = "Nike";
-        assertTrue(MyStack.add(shoeName));
-        MyStack.pop();
+        stringStack.pop(shoeName);
+        stringStack.pop();
 
     }
 
-    public void testThatLastElementInStackCanBeDisplayed(){
+   @Test
+    public void testThatLastNameInStackCanBePeeked(){
         String shoeName = "Adidas";
         String secondShoeName = "Nike";
-        assertTrue(MyStack.add(shoeName));
-        MyStack.pop();
-
+        stringStack.pop(shoeName);
+        stringStack.pop();
     }
 }
 

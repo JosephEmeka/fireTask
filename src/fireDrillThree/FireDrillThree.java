@@ -1,3 +1,4 @@
+package fireDrillThree;
 
 import java.util.Scanner;
 public class FireDrillThree {

@@ -1,4 +1,5 @@
 import Stack.MyStack;
+import Stack.StackOverflowException;
 import org.junit.jupiter.api.*;
 
 import java.util.EmptyStackException;
@@ -25,9 +26,10 @@ public class MyStackTest {
     }
 
     @Test
-    public void testThatWhenAnElementIsAddedInStack_StackIsNotEmpty() {
+    public void testThatWhenAnElementIsPushedInStack_StackIsNotEmpty() {
         stringStack.push("Adidas");
         assertFalse(stringStack.stackIsEmpty());
+        assertEquals(1,stringStack.size());
     }
 
     @Test
@@ -35,6 +37,7 @@ public class MyStackTest {
         stringStack.push("Adidas");
         stringStack.push("Nike");
         assertFalse(stringStack.stackIsEmpty());
+        assertEquals(2,stringStack.size());
     }
 
 
@@ -43,15 +46,15 @@ public class MyStackTest {
            stringStack.push("Adidas");
            stringStack.push("Nike");
            stringStack.push("Adidas");
-           stringStack.push("Crocs");
-           assertEquals(4,stringStack.size());
+           assertEquals(3,stringStack.size());
            stringStack.pop();
+           stringStack.push("Crocs");
            assertEquals(3,stringStack.size());
     }
 
     @Test
 
-    public void testThatIfIPushedFourElementAndPopOne_TheThirdElementPushedIntoStackIsNowTheLastElementInStack() {
+    public void testThatIfIPushedFourElementAndPopOne_TheNumberOfItemInStackIsThree() {
         stringStack.push("Adidas");
         stringStack.push("Nike");
         stringStack.push("Adidas");
@@ -59,21 +62,19 @@ public class MyStackTest {
         assertEquals(4,stringStack.size());
         stringStack.pop();
         assertEquals(3,stringStack.size());
-
-
     }
 
     @Test
-    public void testThatLastNameInStackCanBePeeked() {
+    public void testThatFiveElementIsPushed_OneElementPopped_LastElementInStackCanBePeeked() {
         stringStack.push("Adidas");
         stringStack.push("Nike");
         stringStack.push("Game");
         stringStack.push("Cohen");
+        stringStack.push("jeans");
+        assertEquals("jeans",stringStack.peek());
+        assertEquals(5,stringStack.size());
         stringStack.pop();
-        //assertEquals("Game",stringStack.peek());
-        assertEquals(3,stringStack.size());
-        //assertEquals("Adidas",stringStack.peek());
-
+        assertEquals("Cohen",stringStack.peek());
     }
 
 
@@ -84,23 +85,19 @@ public class MyStackTest {
         stringStack.push("Game");
         stringStack.push("Cohen");
         stringStack.pop();
-        assertEquals("Game",stringStack.peek());
         assertEquals(3,stringStack.size());
-        assertEquals("Adidas",stringStack.peek());
-
+        assertEquals("Game",stringStack.peek());
     }
 
     @Test
-    public void testThatEmptyArrayPeeked_StackThrowsIllegalArgumentException() {
+    public void testThatEmptyArrayPeekedThrowsIllegalArgumentException() {
         stringStack.push("Adidas");
         stringStack.push("Nike");
-        stringStack.push("Game");
-        stringStack.push("Cohen");
         stringStack.pop();
-        //assertEquals("Game",stringStack.peek());
-        assertEquals(3,stringStack.size());
-        //assertEquals("Adidas",stringStack.peek());
-
+        assertEquals("Adidas",stringStack.peek());
+        assertEquals(1,stringStack.size());
+        stringStack.pop();
+        assertThrows(EmptyStackException.class, () -> stringStack.peek());
     }
 
     @Test
@@ -111,7 +108,7 @@ public class MyStackTest {
         stringStack.push("Cohen");
         stringStack.push("Bike");
         assertEquals(5,stringStack.size());
-        assertThrows(StackOverflowError.class, () -> stringStack.push("Java"));
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> stringStack.push("Java"));
     }
 }
 

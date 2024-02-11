@@ -22,22 +22,22 @@ public class MyStack {
         if (numberOfElements == 0) {
             throw new EmptyStackException();
         }
-        return stackOfStrings[numberOfElements--];
+        return stackOfStrings[--numberOfElements];
     }
 
     public void push(String ArrayItems) {
-//        if (numberOfElements > arrayCapacity){
-//            throw new StackOverflowException("Stack At Maximum Capacity");
-//        }
         stackOfStrings[numberOfElements] = ArrayItems;
-        numberOfElements++;
+        ++numberOfElements;
     }
 
     public int size() {
         return numberOfElements;
     }
 
-    public String peek() {
-        return stackOfStrings[numberOfElements];
+    public String peek(){
+        if (numberOfElements == 0){
+            throw new EmptyStackException();
+        }
+        return stackOfStrings[numberOfElements-1];
     }
 }

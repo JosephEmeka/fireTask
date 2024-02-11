@@ -1,5 +1,4 @@
 import Stack.MyStack;
-import Stack.StackOverflowException;
 import org.junit.jupiter.api.*;
 
 import java.util.EmptyStackException;

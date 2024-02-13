@@ -38,7 +38,7 @@ public class ArrayListTest {
     }
 
     @Test
-    public void testThatNewElementCAnnotBeAddedToArrayListAtMaximumCapacity(){
+    public void testThatNewElementCannotBeAddedToArrayListAtMaximumCapacity(){
         assertTrue(listOfStrings.isEmpty());
         listOfStrings.add("ZeroIndex-Strings");
         listOfStrings.add("IndexOne-Strings");
@@ -87,7 +87,7 @@ public class ArrayListTest {
     }
 
     @Test
-    public void testThatAllElementInListCanBeRemoved_ListISEmpty() {
+    public void testThatAllElementInListCanBeCleared_ListISEmpty() {
         assertTrue(listOfStrings.isEmpty());
         listOfStrings.add("ZeroIndex-Strings");
         listOfStrings.add("IndexOne-Strings");
@@ -98,6 +98,34 @@ public class ArrayListTest {
         assertEquals(0, listOfStrings.size());
         assertTrue(listOfStrings.isEmpty());
     }
+
+
+    @Test
+    public void testThatAnElementInListCanBeRemoved_AtSpecifiedIndex() {
+        assertTrue(listOfStrings.isEmpty());
+        listOfStrings.add("ZeroIndex-Strings");
+        listOfStrings.add("IndexOne-Strings");
+        listOfStrings.add("IndexTwo-Strings");
+        listOfStrings.add("IndexThree-Strings");
+        listOfStrings.add("IndexFour-Strings");
+        listOfStrings.remove(3);
+        assertEquals("IndexFour-Strings", listOfStrings.get(3));
+        assertFalse(listOfStrings.isEmpty());
+    }
+
+    @Test
+    public void testThatAnElementInListCanBeSetAndReplaced_AtSpecifiedIndex() {
+        assertTrue(listOfStrings.isEmpty());
+        listOfStrings.add("ZeroIndex-Strings");
+        listOfStrings.add("IndexOne-Strings");
+        listOfStrings.add("IndexTwo-Strings");
+        listOfStrings.add("IndexThree-Strings");
+        listOfStrings.add("IndexFour-Strings");
+        listOfStrings.set(3, "replaced_index");
+        assertEquals("IndexThree-Strings", listOfStrings.set(3, "replaced_index"));
+        assertFalse(listOfStrings.isEmpty());
+    }
+
 
 
 

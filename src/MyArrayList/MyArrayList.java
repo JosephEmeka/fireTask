@@ -27,11 +27,14 @@ public class MyArrayList {
     }
 
     public String get(int index) {
+        if (index < 0 || index >= myStringArrayList.length) {
+            throw new IndexOutOfBoundsException();
+        }
             return myStringArrayList[index];
     }
 
     public void add(int index, String newString) {
-        if (index > myStringArrayList.length) {
+        if (index >= myStringArrayList.length) {
             throw new IndexOutOfBoundsException();
         }
         myStringArrayList[index] = newString;
@@ -45,5 +48,33 @@ public class MyArrayList {
 
     public int size() {
             return myStringArrayList.length;
+    }
+
+    public String remove(int index) {
+        if (index < 0 || index >= myStringArrayList.length) {
+            throw new IndexOutOfBoundsException();
+        }
+        String removedElement = myStringArrayList[index];
+        String[] new_array = new String[myStringArrayList.length - 1];
+        int count = 0;
+        for (int item = 0; item < myStringArrayList.length; item++) {
+            if (item == index) {
+                continue;
+            }
+            new_array[count] = myStringArrayList[item];
+            count++;
+        }
+
+        myStringArrayList = new_array;
+
+        return removedElement;
+    }
+
+    public String set(int index, String replaced_String) {
+        if (index < 0 || index >= myStringArrayList.length) {
+            throw new IndexOutOfBoundsException();
+        }
+        return myStringArrayList[index];
+
     }
 }

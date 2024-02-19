@@ -1,14 +1,30 @@
-import chapterThree.Account;
-import org.junit.jupiter.api.BeforeEach;
+import bankApp.Account;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AccountTest {
 
 
         @Test
 
+        public void testThatAccountCanBeCreated_InitialBalanceIsPositive(){
+
+
+        }
+
+        @Test
+        public void testThatValidPinCanBeCreatedForAccount(){
+
+        }
+
+
+        @Test
+        public void testThatPinIsValid(){
+
+
+        }
+        @Test
         public void depositNegativeBalance_balanceRemainsUnchangedTest(){
 
             Account praiseAccount = new Account();
@@ -34,11 +50,18 @@ public class AccountTest {
 
 
     @Test
-        public void withdrawNegativeAmountFromBalance(){
+        public void withdrawNegativeAmountFromBalance_InvalidAmountException(){
             Account praiseAccount = new Account();
             praiseAccount.setBalance(3000);
-            praiseAccount.withdraw(-2000);
+            praiseAccount.withdraw(-2000, "1212887656");
             assertEquals(3000, praiseAccount.getBalance());
+
+        }
+
+        @Test
+        public void withdrawFractionalAmount_InvalidAmountExceptionTest(){
+
+
 
         }
 
@@ -46,16 +69,28 @@ public class AccountTest {
         public void withdrawPositiveAmountFromBalance(){
         Account praiseAccount = new Account();
             praiseAccount.setBalance(3000);
-            praiseAccount.withdraw(2000);
+            praiseAccount.withdraw(2000,"2183946752");
             assertEquals(1000, praiseAccount.getBalance());
         }
 
         @Test
         public void withdrawAmountGreaterThanBalance(){
             Account praiseAccount = new Account();
-            praiseAccount.withdraw(5000);
+            praiseAccount.withdraw(5000, "1239083765");
             praiseAccount.setBalance(3000);
             assertEquals(3000, praiseAccount.getBalance());
+        }
+
+        @Test
+        public void validatePinBeforeTransaction(){
+
+
+        }
+
+        @Test
+        public void testThatBalanceCanBeChecked_ValidatePinFirst(){
+
+
         }
 
 

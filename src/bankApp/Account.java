@@ -1,39 +1,88 @@
 package bankApp;
 
 
-public class Account extends Bank{
+import java.util.ArrayList;
+import bankApp.InvalidAmountException;
+
+import bankApp.Bank.*;
+
+public class Account {
 
     private String name;
     private int balance;
 
     private String pin;
 
-    private int number;
+    private String number;
+
+    private int numberOfAccount = 0;
+
+
+    public Account (String name, String accountNumber, int initialBalance){
+        if (initialBalance < 0 ){
+            throw new IllegalArgumentException();
+        }
+        this.number = accountNumber;
+        this.balance = initialBalance;
+        this.pin = "0000";
+
+    }
 
         public int getBalance(){
             return balance;
         }
 
         public void setBalance(int balance){
-            balance = this.balance;
+            this.balance = balance;
         }
+
 
         public void deposit(int amount){
-            if(amount > 0) balance += amount;
-        }
-
-    public void withdraw(int amount, String myPin){
-        if(amount > 0) balance += amount;
-    }
-
-    public void validatePin(String data) {
-        if (pin.length()!= 4) {
-            IllegalArgumentException exception;
-            exception = new IllegalArgumentException("pin must be four digits long");
-            throw exception;
+            if (amount <= 0) {
+                throw new InvalidAmountException(STR."Invalid amount: \{amount}");
+            }
+            balance += amount;
 
         }
+
+        public void withdraw(int amount, String myPin){
+            if (amount <= 0) {
+                throw new InvalidAmountException(STR."Invalid amount: \{amount}");
+            }
+            if (amount > balance) {
+                throw new InsufficientFundsException(STR."Invalid amount: \{amount}");
+            }
+
+            balance -= amount;
+        }
+
+        public boolean validatePin(String enteredPin) {
+            if (enteredPin.length() != 4) {
+                IllegalArgumentException exception;
+                exception = new IllegalArgumentException("pin must be four digits long");
+                throw exception;
+            }
+            return enteredPin.equals(String.valueOf(this.pin));
+
+        }
+
+
+
+    public String getDefaultPin() {
+        return pin;
     }
 
+    public String changePin(String myOldPin,String newPin) {
+        if (validatePin(myOldPin)) {
+            return this.pin = newPin;
+        }
+        else{
+            throw new InvalidPinException("Invalid Pin");
+        }
+    }
+
+    public int checkBalance() {
+        return balance;
+    }
 }
 

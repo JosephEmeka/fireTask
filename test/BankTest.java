@@ -1,13 +1,11 @@
 import bankApp.Account;
-import bankApp.Bank;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 
 public class BankTest {
     @Test
     public void testThatAccountCanBeAddedToListOfAccount(){
+        Account myAccount = new Account("joshua", "1452367895", 0);
 
 
     }

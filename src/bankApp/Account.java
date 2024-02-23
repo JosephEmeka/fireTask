@@ -58,9 +58,7 @@ public class Account {
 
         public boolean validatePin(String enteredPin) {
             if (enteredPin.length() != 4) {
-                IllegalArgumentException exception;
-                exception = new IllegalArgumentException("pin must be four digits long");
-                throw exception;
+                throw new IllegalArgumentException("pin must be four digits long");
             }
             return enteredPin.equals(String.valueOf(this.pin));
 
@@ -83,6 +81,10 @@ public class Account {
 
     public int checkBalance() {
         return balance;
+    }
+
+    public String getAccountNumber() {
+        return null;
     }
 }
 

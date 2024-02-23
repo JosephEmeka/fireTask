@@ -9,9 +9,13 @@ public class Bank {
     private List<Account> accounts;
 
 
-    public Bank(String name){
+    public Bank(String name) {
         this.name = name;
         this.accounts = new ArrayList<>();
+    }
+
+    private static void registerCustomer(String firstName, String secondName, String ) {
+
     }
 
 

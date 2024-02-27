@@ -25,7 +25,7 @@ public class DiaryTest {
     }
 
     @Test
-    public void testNewDairyCanBeLocked_Entries_CannotBeCreated_unlockDiary_EntriesCreated(){
+    public void testNewDairyCanBeLocked_EntriesCannotBeCreated_unlockDiary_EntriesCreated(){
         Diary myDiary = new Diary("Joshua", "j123Jayty");
         myDiary.lockDiary();
         assertTrue(myDiary.isLocked());
@@ -33,7 +33,7 @@ public class DiaryTest {
             myDiary.createEntry("sample Entry", "this is my sample test ");
         });
         myDiary.unlockDiary();
-        myDiary.createEntry("sample Entry", "this is a junit test sample");
+        myDiary.createEntry("sample Entry", "my junit test sample");
         myDiary.createEntry("Odogwu", "This is a second sample");
         assertEquals(2, myDiary.getNumberOfEntries());
     }
@@ -46,7 +46,7 @@ public class DiaryTest {
             myDiary.createEntry("sample Entry", "this is my sample test ");
         });
         myDiary.unlockDiary();
-        myDiary.createEntry("sample Entry", "this is a junit test sample");
+        myDiary.createEntry("sample Entry", "my test sample");
         myDiary.createEntry("Odogwu", "This is a second sample");
         myDiary.lockDiary();
         assertThrows(DiaryIsLockedException.class,() -> {
@@ -75,7 +75,7 @@ public class DiaryTest {
             myDiary.createEntry("sample Entry", "this is my sample test ");
         });
         myDiary.unlockDiary();
-        myDiary.createEntry("sample Entry", "this is a junit test sample");
+        myDiary.createEntry("sample Entry", "my test sample");
         myDiary.createEntry("Odogwu", "This is a second sample");
         myDiary.createEntry("Stanley", "This is a third sample");
         myDiary.createEntry("Chichi", "This is a forth sample");
@@ -108,7 +108,7 @@ public class DiaryTest {
     }
 
     @Test
-    public void createFourDairyEntry_LastOne_threeEntriesRemains(){
+    public void createFourDairyEntry_deleteLastOne_threeEntriesRemains(){
         Diary myDiary = new Diary("Joshua", "j123Jayty");
         myDiary.createEntry("sample Entry", "this is a junit test sample");
         myDiary.createEntry("Odogwu", "This is a second sample");
@@ -162,5 +162,52 @@ public class DiaryTest {
         assertNull(myDiary.findEntryById(4));
         assertNotNull(myDiary.findEntryById(1));
         assertNotNull(myDiary.findEntryById(3));
+        myDiary.updateEntry(3, "New Title", "This is an update");
+        System.out.println(myDiary.findEntryById(3).toString());
+    }
+
+    @Test
+    public void  createFourDairyEntry_DeleteEntry2and4_updateDeletedEntry_throwsNullPointerException(){
+        Diary myDiary = new Diary("Joshua", "j123Jayty");
+        myDiary.createEntry("sample Entry", "this is a junit test sample");
+        myDiary.createEntry("Odogwu", "This is a second sample");
+        myDiary.createEntry("Stanley", "This is a third sample");
+        myDiary.createEntry("Chichi", "This is a forth sample");
+        assertEquals(4,myDiary.getNumberOfEntries());
+        myDiary.deleteEntry(2);
+        myDiary.deleteEntry(4);
+        assertNull(myDiary.findEntryById(2));
+        assertNull(myDiary.findEntryById(4));
+        assertNotNull(myDiary.findEntryById(1));
+        assertNotNull(myDiary.findEntryById(3));
+            assertThrows(NullPointerException.class,() -> {
+                myDiary.updateEntry(2, "deleted Entry","This should throw an error");
+                    }
+            );
+    }
+
+    @Test
+    public void  createFourDairyEntry_DeleteEntry2and4_DiaryIsLocked_updateDeletedEntry_throwsDairyIsLockedException(){
+        Diary myDiary = new Diary("Joshua", "j123Jayty");
+        myDiary.createEntry("sample Entry", "this is a junit test sample");
+        myDiary.createEntry("Odogwu", "This is a second sample");
+        myDiary.createEntry("Stanley", "This is a third sample");
+        myDiary.createEntry("Chichi", "This is a forth sample");
+        assertEquals(4,myDiary.getNumberOfEntries());
+        myDiary.deleteEntry(2);
+        myDiary.deleteEntry(4);
+        assertNull(myDiary.findEntryById(2));
+        assertNull(myDiary.findEntryById(4));
+        assertNotNull(myDiary.findEntryById(1));
+        assertNotNull(myDiary.findEntryById(3));
+        myDiary.lockDiary();
+        assertTrue(myDiary.isLocked());
+        myDiary.unlockDiary();
+        assertThrows(NullPointerException.class,() -> {
+                    myDiary.updateEntry(2, "deleted Entry","This should throw an error");
+                }
+        );
+
+
     }
 }

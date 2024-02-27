@@ -1,7 +1,5 @@
 package Diaries;
-
-import bankApp.InvalidPinException;
-
+import Diaries.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +8,7 @@ public class Diary {
     private String password;
     private List<Entry> myDiaryList;
 
-    private int idCount = 0;
+    private int idCount     = 0;
     private boolean isLocked;
 
     public Diary(String userName, String password) {
@@ -28,8 +26,12 @@ public class Diary {
         }
         else {
             Entry freshEntry = new Entry(idCount++, title, body);
+            freshEntry.getDateCreated();
             myDiaryList.add(freshEntry);
+
         }
+
+
     }
 
     public int getNumberOfEntries() {
@@ -37,9 +39,7 @@ public class Diary {
     }
 
     public void deleteEntry(int id) {
-        if(isLocked()){
-            throw new DiaryIsLockedException("Dairy is Locked! Unlock to proceed");
-        }
+        validateIsLocked();
         if (findEntryById(id) == null){
             throw new IllegalArgumentException("Element already deleted or does not exist in the list");
         }
@@ -72,7 +72,7 @@ public class Diary {
     }
 
     public boolean validatePassword(String enteredPassword) {
-//        enteredPassword.[^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$"]
+        validateIsLocked();
         if (enteredPassword.length() < 6 || enteredPassword.length() > 15) {
             throw new IllegalArgumentException("password must be between 6-15 Characters long");
         }
@@ -84,4 +84,24 @@ public class Diary {
         }
 
     }
+
+    public void updateEntry(int id, String newTitle, String newBody) {
+        validateIsLocked();
+        if(findEntryById(id) == null){
+            throw new NullPointerException();
+        }
+        else {
+            findEntryById(id).setTitle(newTitle);
+            findEntryById(id).setBody(newBody);
+        }
+    }
+
+
+    public void validateIsLocked(){
+        if(isLocked()){
+            throw new DiaryIsLockedException("Dairy is Locked! Unlock to proceed");
+        }
+    }
+
+
 }

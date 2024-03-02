@@ -31,6 +31,7 @@ public class Diaries {
         diaryList.remove(sample);
     }
 
+
 }
 
 

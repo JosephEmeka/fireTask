@@ -14,7 +14,8 @@ public class Bank {
         this.accounts = new ArrayList<>();
     }
 
-    private static void registerCustomer(String firstName, String secondName, String  AccountNumber ) {
+    private void registerCustomer(String firstName, String secondName, String  AccountNumber ) {
+
 
     }
 

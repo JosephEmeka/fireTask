@@ -32,7 +32,7 @@ public class DiaryTest {
         assertThrows(DiaryIsLockedException.class,() -> {
             myDiary.createEntry("sample Entry", "this is my sample test ");
         });
-        myDiary.unlockDiary();
+        myDiary.unlockDiary("j123Jayty");
         myDiary.createEntry("sample Entry", "my junit test sample");
         myDiary.createEntry("Odogwu", "This is a second sample");
         assertEquals(2, myDiary.getNumberOfEntries());
@@ -45,7 +45,7 @@ public class DiaryTest {
         assertThrows(DiaryIsLockedException.class,() -> {
             myDiary.createEntry("sample Entry", "this is my sample test ");
         });
-        myDiary.unlockDiary();
+        myDiary.unlockDiary("j123Jayty");
         myDiary.createEntry("sample Entry", "my test sample");
         myDiary.createEntry("Odogwu", "This is a second sample");
         myDiary.lockDiary();
@@ -53,7 +53,7 @@ public class DiaryTest {
             myDiary.deleteEntry(2);
         });
         assertEquals(2, myDiary.getNumberOfEntries());
-        myDiary.unlockDiary();
+        myDiary.unlockDiary("j123Jayty");
         myDiary.deleteEntry(1);
         myDiary.deleteEntry(2);
         assertEquals(0, myDiary.getNumberOfEntries());
@@ -74,7 +74,7 @@ public class DiaryTest {
         assertThrows(DiaryIsLockedException.class,() -> {
             myDiary.createEntry("sample Entry", "this is my sample test ");
         });
-        myDiary.unlockDiary();
+        myDiary.unlockDiary("j123Jayty");
         myDiary.createEntry("sample Entry", "my test sample");
         myDiary.createEntry("Odogwu", "This is a second sample");
         myDiary.createEntry("Stanley", "This is a third sample");
@@ -202,7 +202,7 @@ public class DiaryTest {
         assertNotNull(myDiary.findEntryById(3));
         myDiary.lockDiary();
         assertTrue(myDiary.isLocked());
-        myDiary.unlockDiary();
+        myDiary.unlockDiary("j123Jayty");
         assertThrows(NullPointerException.class,() -> {
                     myDiary.updateEntry(2, "deleted Entry","This should throw an error");
                 }

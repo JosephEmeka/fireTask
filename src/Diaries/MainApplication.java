@@ -9,8 +9,6 @@ import static javax.swing.JOptionPane.showInputDialog;
 
 
 
-
-
 public class MainApplication {
     private static final List<Diary> diaryArrayList = new ArrayList<>();
     private static final Diaries newDiaries = new Diaries(diaryArrayList);
@@ -33,7 +31,11 @@ public class MainApplication {
                 1) Create Diary
                 2) Lock Diary
                 3) Unlock Diary
-                4) Exit App
+                4) Add Entry
+                5) Delete Entry
+                6) Update Entry
+                7) Find Entry by Id
+                8) Exit App
                 """;
 
         String userInput = showInputDialog(null, prompts);
@@ -41,7 +43,7 @@ public class MainApplication {
         switch (userInput) {
             case "1" -> {
                 String wouldYouLikeToCreateYourUniqueDiaryInput = showInputDialog(null, "Would you like to create your unique diary? Yes or No");
-                    while(!wouldYouLikeToCreateYourUniqueDiaryInput.matches("[a-zA-Z]")) {
+                while(!wouldYouLikeToCreateYourUniqueDiaryInput.matches("^[a-zA-Z]+$")) {
                         JOptionPane.showMessageDialog(null, "Invalid input");
                         wouldYouLikeToCreateYourUniqueDiaryInput = showInputDialog(null, "Would you like to create your unique diary? Yes or No");
                     }
@@ -50,31 +52,49 @@ public class MainApplication {
                     else if (wouldYouLikeToCreateYourUniqueDiaryInput.equalsIgnoreCase("no")) {
                         runApp();
                     }
+                goBackControlFunction();
                 break;
 
             }
 
             case "2" -> {
-                String userName = showInputDialog(null, "Enter User Name");
-                while(!userName.matches("[a-zA-Z]{1,50}")) {
-                    JOptionPane.showMessageDialog(null, "Invalid input. User name should contain only alphabets and be up to 50 characters long.");
-                    userName = showInputDialog(null, "Enter User Name");
-                }
-                lockDiary(userName);
+                lockDiary();
+                goBackControlFunction();
                 break;
             }
 
             case "3" -> {
-                String userName = showInputDialog(null, "Enter User Name");
-                while(!userName.matches("[a-zA-Z]{1,50}")) {
-                    JOptionPane.showMessageDialog(null, "Invalid input. User name should contain only alphabets and be up to 50 characters long.");
-                    userName = showInputDialog(null, "Enter User Name");
-                }
-                unlockDiary(userName);
+                unlockDiary();
+                goBackControlFunction();
                 break;
             }
 
-            case "4" -> {
+            case "4" ->  {
+                addEntry();
+                goBackControlFunction();
+                break;
+            }
+
+            case "5" -> {
+                deleteEntry();
+                goBackControlFunction();
+                break;
+            }
+
+            case "6" -> {
+                updateEntry();
+                goBackControlFunction();
+                break;
+            }
+
+            case "7" -> {
+                findEntryById();
+                goBackControlFunction();
+                break;
+            }
+
+
+            case "8" -> {
                 exitApp();
                 break;
             }
@@ -85,21 +105,15 @@ public class MainApplication {
         }
     }
 
-    private static void exitApp() {
-        JOptionPane.showMessageDialog(null, "Exiting the application. Goodbye!");
-        System.exit(0);
-    }
-
-
 
     private static void createDiary() {
         String userName = showInputDialog(null, "Enter User Name");
-        while(!userName.matches("[a-zA-Z]{1,50}")) {
+        while(!userName.matches("^[a-zA-Z]{1,50}$")){
             JOptionPane.showMessageDialog(null, "Invalid input. User name should contain only alphabets and be up to 50 characters long.");
             userName = showInputDialog(null, "Enter User Name");
         }
         String enterStrongPassword = showInputDialog(null, "Enter Strong Password");
-        while(!enterStrongPassword.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\\\d)(?=\\\\S+$).{8,}$\"")) {
+        while (!enterStrongPassword.matches("^(?=.[a-z])(?=.[A-Z]){8,15}$")) {
             JOptionPane.showMessageDialog(null, "Invalid password");
             enterStrongPassword = showInputDialog(null, "Enter Strong Password");
         }
@@ -107,115 +121,113 @@ public class MainApplication {
         Diary sampleDiary = new Diary(userName, enterStrongPassword);
         diaryArrayList.add(sampleDiary);
         JOptionPane.showMessageDialog(null, "Diary created successfully...");
-        String createDiaryOptions = """
-                what would you like to do next?
-                1) Add Entry
-                2) Delete Entry
-                3) Update Entry
-                4) Find Entry by Id
-                5) Go back to main menu
-                6) exit app
-                """;
-
-        String userInput = showInputDialog(null, createDiaryOptions);
-
-        switch (userInput) {
-            case "1" -> {
-                addEntry();
-                break;
-            }
-
-            case "2" -> {
-                deleteEntry();
-                break;
-            }
-
-            case "3" -> {
-                updateEntry();
-                break;
-            }
-
-            case "4" -> {
-                String entryId = showInputDialog(null, "Enter entry ID");
-                while(!entryId.matches("[1-9]{1,50}")) {
-                    JOptionPane.showMessageDialog(null, "Invalid input. Entry ID should contain only numbers and be up to 50 characters long.");
-                    entryId = showInputDialog(null, "Enter User Name");
-                }
-                findEntryById();
-                break;
-            }
-
-            case "5" -> {
-                runApp();
-                break;
-            }
-
-            case "6" -> {
-                exitApp();
-                break;
-            }
-
-            default -> {
-                exitApp();
-            }
-        }
-
-
     }
 
     private static void deleteEntry() {
-        JOptionPane.showMessageDialog(null, "Deleting entry...");
-
-
+        int entryId = Integer.parseInt(showInputDialog(null, "Enter Entry ID to delete:"));
+        for (Diary myDiary : diaryArrayList) {
+            if (myDiary.getEntryId() == entryId) {
+                diaryArrayList.remove(myDiary);
+                JOptionPane.showMessageDialog(null, "Entry deleted successfully...");
+                return;
+            }
+        }
+        JOptionPane.showMessageDialog(null, "Entry Not found...");
     }
 
     private static void updateEntry() {
-       String myID = JOptionPane.showInputDialog(null, " Enter entry ID...");
-        JOptionPane.showMessageDialog(null, "Updating entry...");
-        for(Diary mydiary:diaryArrayList)
-            if (mydiary.getUserName().equals(myID))
-                mydiary.unlockDiary();
-        JOptionPane.showMessageDialog(null, "Diary is unlocked...");
-
+        int entryId = Integer.parseInt(showInputDialog(null, "Enter Entry ID to update:"));
+        for (Diary myDiary : diaryArrayList) {
+            if (myDiary.getEntryId() == entryId) {
+                String newTitle = showInputDialog(null, "Enter Entry ID to update:");
+                String newBody = showInputDialog(null, "Enter Entry ID to update:");
+                myDiary.updateEntry(entryId, newTitle, newBody);
+                JOptionPane.showMessageDialog(null, "Entry updated successfully...");
+                return;
+            }
+        }
+        JOptionPane.showMessageDialog(null, "Entry Not found...");
     }
 
     private static void addEntry() {
-        JOptionPane.showMessageDialog(null, "Adding entry...");
-
+            String userName = JOptionPane.showInputDialog(null, "Enter Diary Username to add entry:");
+            for (Diary myDiary : diaryArrayList) {
+                if (myDiary.getUserName().equals(userName)) {
+                    String newTitle = showInputDialog(null, "Enter New Title:");
+                    String newBody = showInputDialog(null, "Enter New Body:");
+                    myDiary.createEntry(newTitle, newBody);
+                    JOptionPane.showMessageDialog(null, "Entry added successfully...");
+                    return;
+                }
+            }
+            JOptionPane.showMessageDialog(null, STR."Diary not found for user: \{userName}");
     }
 
     private static void findEntryById() {
-       String myId = JOptionPane.showInputDialog(null, " Enter entry ID...");
+        int entryId = Integer.parseInt(showInputDialog(null, "Enter Entry ID :  "));
         JOptionPane.showMessageDialog(null, "Finding entry by ID...");
-        for(Diary mydiary:diaryArrayList)
-            if (mydiary.getUserName().equals(myId))
-                mydiary.findEntryById(Integer.parseInt(myId));
-            else {
-                JOptionPane.showMessageDialog(null, "Entry ID does not exist in diary...");
-                runApp();
+        for (Diary mydiary : diaryArrayList)
+            if (mydiary.getEntryId() == entryId) {
+                mydiary.findEntryById(entryId);
             }
 
+        JOptionPane.showMessageDialog(null, "Entry ID does not exist in diary...");
+        runApp();
     }
 
-    private static void unlockDiary(String userName) {
-
-        JOptionPane.showMessageDialog(null, "Unlocking diary...");
-        for(Diary mydiary:diaryArrayList)
-            if (mydiary.getUserName().equals(userName))
-                mydiary.unlockDiary();
-        JOptionPane.showMessageDialog(null, "Diary is unlocked...");
-
-
+    private static void unlockDiary() {
+        String userName = JOptionPane.showInputDialog(null, "Enter Username to unlock diary:");
+        for (Diary myDiary : diaryArrayList) {
+            if (myDiary.getUserName().equals(userName)) {
+                myDiary.unlockDiary(userName);
+                JOptionPane.showMessageDialog(null, "Diary is unlocked...");
+                return;
+            }
+        }
+        JOptionPane.showMessageDialog(null, STR."Diary not found for user: \{userName}");
     }
 
-    private static void lockDiary(String userName) {
-        JOptionPane.showMessageDialog(null, "Locking diary...");
-        for(Diary mydiary:diaryArrayList)
-            if (mydiary.getUserName().equals(userName))
-                mydiary.lockDiary();
-        JOptionPane.showMessageDialog(null, "Diary is Locked...");
-
-
+    private static void lockDiary() {
+        String userName = JOptionPane.showInputDialog(null, "Enter Username to lock diary:");
+        for (Diary myDiary : diaryArrayList) {
+            if (myDiary.getUserName().equals(userName)) {
+                myDiary.lockDiary();
+                JOptionPane.showMessageDialog(null, "Diary is Locked...");
+                return;
+            }
+        }
+        JOptionPane.showMessageDialog(null, STR."Diary not found for user: \{userName}");
     }
 
+    private static void exitApp() {
+        JOptionPane.showMessageDialog(null, "Exiting the application. Goodbye!");
+        System.exit(0);
+    }
+
+    private static void goBackControlFunction(){
+        String wouldYouLikeToCwouldYouLikeToContinue = showInputDialog(null, "Would you like to back to the menu? Yes(Menu) or No(Exit)");
+        while(!wouldYouLikeToCwouldYouLikeToContinue.matches("^[a-zA-Z]+$")) {
+            JOptionPane.showMessageDialog(null, "Invalid input");
+            wouldYouLikeToCwouldYouLikeToContinue = showInputDialog(null, "Would you like to create your unique diary? Yes or No");
+        }
+        if (wouldYouLikeToCwouldYouLikeToContinue.equalsIgnoreCase("yes"))
+            runApp();
+        else if (wouldYouLikeToCwouldYouLikeToContinue.equalsIgnoreCase("no")) {
+            exitApp();
+        }
+
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

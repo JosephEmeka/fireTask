@@ -1,30 +1,29 @@
 package bankApp;
 
 
-import java.util.ArrayList;
-import bankApp.InvalidAmountException;
-
-import bankApp.Bank.*;
-
 public class Account {
 
-    private String name;
+    private String firstName;
+
+    private String lastName;
+
     private int balance;
+
 
     private String pin;
 
-    private String number;
+    private int accountNumber = 0;
+
 
     private int numberOfAccount = 0;
 
 
-    public Account (String name, String accountNumber, int initialBalance){
-        if (initialBalance < 0 ){
-            throw new IllegalArgumentException();
-        }
-        this.number = accountNumber;
-        this.balance = initialBalance;
-        this.pin = "0000";
+    public Account (String firstName, String lastName, String pin){
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.accountNumber += 1;
+        this.balance = 0;
+        this.pin = pin;
 
     }
 
@@ -45,16 +44,14 @@ public class Account {
 
         }
 
-        public void withdraw(int amount, String myPin){
-            if (amount <= 0) {
-                throw new InvalidAmountException(STR."Invalid amount: \{amount}");
-            }
-            if (amount > balance) {
-                throw new InsufficientFundsException(STR."Invalid amount: \{amount}");
-            }
-
+    public void withdraw(int amount, String pin) {
+        if (amount > 0 && amount <= balance && validatePin(pin)) {
             balance -= amount;
         }
+        else {
+            throw new InvalidAmountException("Invalid withdrawal amount or incorrect PIN");
+        }
+    }
 
         public boolean validatePin(String enteredPin) {
             if (enteredPin.length() != 4) {
@@ -66,7 +63,7 @@ public class Account {
 
 
 
-    public String getDefaultPin() {
+    private String getPin() {
         return pin;
     }
 
@@ -83,8 +80,16 @@ public class Account {
         return balance;
     }
 
-    public String getAccountNumber() {
-        return null;
+    public int assignAccountNumber() {
+       return accountNumber;
+    }
+
+    public String getFirstName(){
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
     }
 }
 

@@ -62,7 +62,8 @@ public class Diary {
     public void lockDiary() {
         this.isLocked = true;
     }
-    public void unlockDiary() {
+    public void unlockDiary(String enteredPassword) {
+        validatePassword(enteredPassword);
         this.isLocked = false;
     }
 
@@ -102,5 +103,9 @@ public class Diary {
         }
     }
 
+    public int getEntryId(){
+        return idCount;
+
+    }
 
 }

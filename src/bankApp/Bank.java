@@ -6,6 +6,9 @@ import java.util.List;
 public class Bank {
     private String name;
     private List<Account> accounts;
+    private static int registeredAccountNumbering = 1;
+    private static int accountNumber = 1000;
+
 
 
     public Bank(String name) {
@@ -13,73 +16,89 @@ public class Bank {
         this.accounts = new ArrayList<>();
     }
 
-    public void registerCustomer(String firstName, String secondName, String pin) {
-        Account new_account_to_be_registered = new Account(firstName, secondName, pin);
-        accounts.add(new_account_to_be_registered);
-    }
-
     public List<Account> getAccounts() {
         return accounts;
     }
 
-    public int getAccountNumber(String firstName, String lastName) {
-        for (Account customerAccount : accounts) {
-            if (customerAccount.getFirstName().toLowerCase().equals(firstName) && customerAccount.getLastName().toLowerCase().equals(lastName)) {
-                return customerAccount.assignAccountNumber();
+    public void registerCustomer(String firstName, String lastName, String pin) {
+        Account freshAccount = new Account(firstName, lastName, pin);
+        for (Account accountItem : accounts) {
+            if (accountItem.getFirstName().equalsIgnoreCase(firstName) && accountItem.getLastName().equalsIgnoreCase(lastName)) {
+                throw new DoubleRegistrationException(STR."Account \{accountItem.getAccountNumber()} already exists");
             }
         }
-        throw new AccountNotFoundException("Account is not found");
+
+        validatePin(pin);
+        freshAccount.setAccountNumber(accountNumber);
+        accounts.add(freshAccount);
+        accountNumber += registeredAccountNumbering;
+        freshAccount.setAccountNumber(accountNumber);
     }
 
+
+    public void validatePin(String pin){
+        if (pin.length() != 4){
+            throw new InvalidPinException("Pin must be four digits");
+        }
+    }
 
     public void removeAccount(int accountNumber, String pin) {
-        accounts.removeIf(customerAccount -> customerAccount.assignAccountNumber() == accountNumber && customerAccount.validatePin(pin));
-    }
-
-    public void deposit(int amount, int accountNumber) {
-        for (Account customerAccount : accounts)
-            if (customerAccount.assignAccountNumber() == accountNumber) {
-                if (amount <= 0) {
-                    throw new InvalidAmountException("you cannot deposit negative amount");
-                }
-                customerAccount.deposit(amount);
-                return;
-            }
-        throw new ValueErrorException(STR."Account \{accountNumber} not found");
-    }
-
-    public void transfer(int firstAccount, int secondAccount, int amount, String pin) {
-
-        public void transfer(int firstAccountNumber, int secondAccountNumber, int amount, String pin) {
-            for (Account customerAccount : accounts) {
-                if (customerAccount.getAccountNumber() == firstAccountNumber) {
-                    if (amount <= 0) {
-                        throw new InvalidAmountException("You cannot send a non-positive amount");
-                    } else {
-                        customerAccount.withdraw(amount, pin);
-                    }
-                }
-                if (customerAccount.getAccountNumber() == secondAccountNumber) {
-                    customerAccount.deposit(amount);
-                }
-            }
-
-            if (findAccount(firstAccountNumber) == null) {
-                throw new AccountNotFoundException("First Account not found");
-            }
-
-            if (findAccount(secondAccountNumber) == null) {
-                throw new AccountNotFoundException("Second Account not found");
-            }
+        validatePin(pin);
+        for(Account customerAccount: accounts)
+            if(customerAccount.getAccountNumber()== accountNumber && customerAccount.validatePin(pin))
+                accounts.remove( findAccount(accountNumber));
         }
 
 
-        private Account findAccount(int accountNumber) {
-            for (Account account : accounts) {
-                if (account.getAccountNumber() == accountNumber) {
-                    return account;
-                }
-            }
-            return null;
+    public int getCustomerAccountNumber(String firstName, String lastName) {
+        for(Account customerAccount: accounts)
+            if(customerAccount.getFirstName().equalsIgnoreCase(firstName) && customerAccount.getLastName().equalsIgnoreCase(lastName))
+                return customerAccount.getAccountNumber();
+        return 0;
+    }
 
+    public String getBankName(){
+        return name;
+    }
+
+
+    public int checkBalance(int accountNumber, String pin) {
+        validatePin(pin);
+        for (Account customerAccount : accounts)
+            if (customerAccount.getAccountNumber() == accountNumber)
+                return customerAccount.checkBalance();
+        throw new AccountNotFoundException("Account was not found");
+    }
+
+    public void deposit(int accountNumber, int amount) {
+        findAccount(accountNumber).deposit(amount);
+    }
+
+    public void withdraw(int accountNumber, int amount, String pin) {
+        validatePin(pin);
+        findAccount(accountNumber).withdraw(amount, pin);
+    }
+
+    public Account findAccount(int accountNumber) {
+        Account foundAccount = null;
+        for (Account customerAccount : accounts) {
+            if (customerAccount.getAccountNumber() == accountNumber) {
+                foundAccount = customerAccount;
+                break;
+            }
+        }
+
+        if (foundAccount == null) {
+            throw new AccountNotFoundException("Cannot find account number");
+        }
+        return foundAccount;
+    }
+
+    public void transfer(int sendingAccountNumber, int receivingAccountNumber, int amount, String pin) {
+        validatePin(pin);
+        if(findAccount(sendingAccountNumber) == findAccount(receivingAccountNumber))
+            throw new InvalidAccountException("Invalid Account");
+        findAccount(sendingAccountNumber).withdraw(amount, pin);
+        findAccount(receivingAccountNumber).deposit(amount);
+    }
 }

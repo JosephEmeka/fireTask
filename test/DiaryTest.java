@@ -1,5 +1,5 @@
-import Diaries.*;
-import Diaries.Diary;
+import diaries.*;
+import diaries.Diary;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

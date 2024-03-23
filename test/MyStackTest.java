@@ -1,4 +1,4 @@
-import Stack.MyStack;
+import stack.MyStack;
 import org.junit.jupiter.api.*;
 
 import java.util.EmptyStackException;

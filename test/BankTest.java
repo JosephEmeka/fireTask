@@ -1,108 +1,173 @@
-import bankApp.Account;
-import bankApp.Bank;
-import bankApp.InvalidAmountException;
+import bankApp.*;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
-import javax.security.auth.login.AccountNotFoundException;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class BankTest {
-        @Test
-        public void bankHasNoAccount(){
-            Bank GTB = new Bank("GTB");
-            assertEquals(0, GTB.getAccounts().size());
 
-        }
-        @Test
-        public void testThatCustomerCanBeRegistered() {
-            Bank GTB = new Bank("GTB");
-            GTB.registerCustomer("Joshua", "Okeme", "1001");
-            GTB.registerCustomer("John", "Favour", "1234");
-            assertEquals(2, GTB.getAccounts().size());
-        }
+    @AfterEach
+    public void tearDown() {
+        Bank GTB = new Bank("GTB");
+        GTB.getAccounts().clear();
+    }
 
+    @Test
+    public void bankCanBeCreated() {
+        Bank GTB = new Bank("GTB");
+        assertNotNull(GTB);
+    }
 
-        @Test
-        public void testThatAccountCanBeRemovedFromListOfAccount() throws AccountNotFoundException {
-            Bank Access = new Bank("Access");
-            Access.registerCustomer("Joshua", "Okeme", "1001");
-            Access.registerCustomer("John", "Favour", "1234");
-            Access.registerCustomer("Patric", "Ruth", "1235");
-            assertEquals(3, Access.getAccounts().size());
-            int accountNumber = Access.getAccountNumber("Joshua", "Okeme");
-            Access.removeAccount(accountNumber, "1001");
-            assertEquals(2, Access.getAccounts().size());
+    @Test
+    public void bankHasNoAccount() {
+        Bank GTB = new Bank("GTB");
+        assertEquals(0, GTB.getAccounts().size());
+    }
 
-        }
+    @Test
+    public void registerAccountsInBank() {
+        Bank GTB = new Bank("GTB");
+        GTB.registerCustomer("john", "sam", "1001");
+        assertEquals(1, GTB.getAccounts().size());
+    }
 
+    @Test
 
+    public void registerMultipleAccounts() {
+        Bank GTB = new Bank("GTB");
+        GTB.registerCustomer("john", "sam", "1001");
+        GTB.registerCustomer("Gab", "samuel", "1002");
+        GTB.registerCustomer("joe", "sammy", "1003");
+        assertEquals(3, GTB.getAccounts().size());
+    }
 
+    @Test
+    public void testThatBankCannotRegisterCustomerWithInvalidPin() {
+        Bank GTB = new Bank("GTB");
+        GTB.registerCustomer("john", "sam", "1001");
+        assertThrows(InvalidPinException.class, () -> {
+                    GTB.registerCustomer("Gab", "samuel", "10023");
+                }
+        );
+        assertThrows(InvalidPinException.class, () -> {
+            GTB.registerCustomer("joe", "sammy", "100");
+        });
+        assertEquals(1, GTB.getAccounts().size());
+    }
 
-        @Test
-        public void depositPositiveAmountInSpecificAccountNumber_BalanceIncreases(){
-            Bank Access = new Bank("Access");
-            Account firstAccount = new Account("joshua", "Stanley", "1001");
-            Access.registerCustomer("joshua", "Okeme", "1001");
-            Access.deposit(4_000, firstAccount.assignAccountNumber());
+    @Test
+    public void testAccountCanBeRemoved() {
+        Bank GTB = new Bank("GTB");
+        GTB.registerCustomer("john", "sam", "1001");
+        GTB.registerCustomer("Gab", "samuel", "1002");
+        GTB.registerCustomer("joe", "sammy", "1003");
+        assertEquals(3, GTB.getAccounts().size());
+        int accountNumber = GTB.getCustomerAccountNumber("john", "sam");
+        GTB.removeAccount(accountNumber, "1001");
+        assertEquals(2, GTB.getAccounts().size());
+    }
 
-        }
-
-
-        @Test
-        public void depositNegativeAmountInSpecificAccountNumber_BalanceRemainsTheSame_InvalidAmountException() {
-            Bank Access = new Bank("Access");
-            Account firstAccount = new Account("joshua", "Stanley", "1001");
-            Access.registerCustomer("joshua", "Okeme", "1001");
-            assertThrows(InvalidAmountException.class,() -> {
-                Access.deposit(-4_000, firstAccount.assignAccountNumber());
-            });
-
-        }
-
-        @Test
-        public void transferNegativeAmountInSpecificAccountNumber_BalanceRemainsTheSame_InvalidAmountException() {
-            Bank Access = new Bank("Access");
-            Account firstAccount = new Account("joshua", "Stanley", "1001");
-            Account secondAccount = new Account("Sam", "junior", "1031");
-            Access.transfer(firstAccount.assignAccountNumber(), secondAccount.assignAccountNumber(),-5_000, "1001");
-
-        }
-
-        @Test
-        public void transferPositiveAmountInSpecificAccountNumber_BalanceIncreases() {
-            Bank Access = new Bank("Access");
-            Account firstAccount = new Account("joshua", "Stanley", "1001");
-            Account secondAccount = new Account("Sam", "junior", "1031");
-            firstAccount.deposit(20_000);
-            Access.transfer(firstAccount.assignAccountNumber(), secondAccount.assignAccountNumber(),5_000, "1001");
-            assertEquals(0, secondAccount.getBalance());
-        }
-        @Test
-        public void checkThatTransferredAmountIsDepositedInRecipientAccount_RecipientBalanceIncreases() {
-
-
-        }
-        @Test
-        public void removeAccountFromAccountList_AccountIsRemoved() {
-
-
-        }
-        @Test
-
-        public void registerCustomer_CustomerIsRegistered_ListOfCustomersIncreases() {
-
-
-        }
-
-        @Test
-
-        public void findAccountFromListOfAccount_AccountCanBeFound() {
-
-
-        }
+    @Test
+    public void testThatSameBankAccountCannotBeRegisteredTwice() {
+        Bank Access = new Bank("Access");
+        Access.registerCustomer("john", "sam", "1001");
+        Access.registerCustomer("Gab", "samuel", "1002");
+        Access.registerCustomer("joe", "sammy", "1003");
+        assertThrows(DoubleRegistrationException.class,
+                () -> {
+                    Access.registerCustomer("john", "sam", "1001");
+                });
+        assertEquals(3, Access.getAccounts().size());
 
     }
 
+    @Test
+    public void testThatAccountBalanceCanBeChecked_initialBalanceIsZero() {
+        Bank accessBank = new Bank("GTB");
+        accessBank.registerCustomer("joshua", "mike", "1001");
+        assertEquals(1, accessBank.getAccounts().size());
+        int accountNumber = accessBank.getCustomerAccountNumber("joshua", "mike");
+        assertEquals(0, accessBank.checkBalance(accountNumber, "1001"));
+    }
+
+    @Test
+    public void testBankCanDepositPositiveAmountInAccounts() {
+        Bank accessBank = new Bank("GTB");
+        accessBank.registerCustomer("Joshua", "mike", "1001");
+        accessBank.registerCustomer("Samuel", "Sharon", "1001");
+        accessBank.deposit(accessBank.getCustomerAccountNumber("Samuel", "Sharon"),5000);
+        assertEquals(5000, accessBank.checkBalance(accessBank.getCustomerAccountNumber("Samuel", "Sharon"), "1001"));
+    }
+
+
+    @Test
+    public void testThatBankAccountCannotWithdrawNegativeAmount() {
+        Bank accessBank = new Bank("GTB");
+        accessBank.registerCustomer("Joshua", "mike", "1001");
+        accessBank.registerCustomer("Samuel", "Sharon", "1001");
+        accessBank.deposit(accessBank.getCustomerAccountNumber("Samuel", "Sharon"), 5000);
+        assertThrows(InsufficientFundsException.class, () -> accessBank.withdraw(accessBank.getCustomerAccountNumber("Samuel", "Sharon"), -10000, "1001"));
+        assertEquals(5000, accessBank.checkBalance(accessBank.getCustomerAccountNumber("Samuel", "Sharon"), "1001"));
+    }
+    @Test
+    public void testThatBankAccountCannotWithdrawAmountGreaterThanBalance() {
+        Bank accessBank = new Bank("GTB");
+        accessBank.registerCustomer("Joshua", "mike", "1001");
+        accessBank.registerCustomer("Samuel", "Sharon", "1001");
+        accessBank.deposit(accessBank.getCustomerAccountNumber("Joshua", "mike"), 5000);
+        assertThrows(InsufficientFundsException.class, () -> accessBank.withdraw(accessBank.getCustomerAccountNumber("Joshua", "mike"), 10000, "1001"));
+        assertEquals(5000, accessBank.checkBalance(accessBank.getCustomerAccountNumber("Joshua", "mike"), "1001"));
+    }
+    @Test
+    public void testThatBankAccountCanTransferToAnotherAccount() {
+        Bank accessBank = new Bank("GTB");
+        accessBank.registerCustomer("Joshua", "mike", "1001");
+        accessBank.registerCustomer("Samuel", "Sharon", "1001");
+        int sendingAccountNumber = accessBank.getCustomerAccountNumber("Joshua", "mike");
+        int receivingAccountNumber = accessBank.getCustomerAccountNumber("Samuel", "Sharon");
+        accessBank.deposit(sendingAccountNumber, 25000);
+        accessBank.deposit(receivingAccountNumber, 35000);
+        accessBank.transfer(sendingAccountNumber,  receivingAccountNumber, 5000, "1001");
+        assertEquals(20_000, accessBank.checkBalance(sendingAccountNumber, "1001"));
+        assertEquals(40_000, accessBank.checkBalance(receivingAccountNumber, "1001"));
+    }
+    @Test
+    public void testThatBankAccountCannotTransferNegativeAmountToAnotherAccount() {
+        Bank accessBank = new Bank("GTB");
+        accessBank.registerCustomer("Joshua", "mike", "1001");
+        accessBank.registerCustomer("Samuel", "Sharon", "1001");
+        accessBank.deposit(accessBank.getCustomerAccountNumber("Joshua", "mike"), 25000);
+        accessBank.deposit(accessBank.getCustomerAccountNumber("Samuel", "Sharon"), 35000);
+        assertThrows(InsufficientFundsException.class, () -> accessBank.transfer(accessBank.getCustomerAccountNumber("Joshua", "mike"), accessBank.getCustomerAccountNumber("Samuel", "Sharon"), -5000, "1001"));
+        assertEquals(35000, accessBank.checkBalance(accessBank.getCustomerAccountNumber("Samuel", "Sharon"), "1001"));
+    }
+    @Test
+    public void testThatBankAccountCannotTransferAmountGreaterThanBalanceToAnotherAccount() {
+        Bank accessBank = new Bank("GTB");
+        accessBank.registerCustomer("Joshua", "mike", "1001");
+        accessBank.registerCustomer("Samuel", "Sharon", "1001");
+        accessBank.deposit(accessBank.getCustomerAccountNumber("Joshua", "mike"), 25000);
+        accessBank.deposit(accessBank.getCustomerAccountNumber("Samuel", "Sharon"), 35000);
+        assertThrows(InsufficientFundsException.class, () -> accessBank.transfer(accessBank.getCustomerAccountNumber("Joshua", "mike"), accessBank.getCustomerAccountNumber("Samuel", "Sharon"), 50_000, "1001"));
+        assertEquals(35000, accessBank.checkBalance(accessBank.getCustomerAccountNumber("Samuel", "Sharon"), "1001"));
+    }
+
+    @Test
+    public void testThatBankAccountCannotTransferToSameAccount() {
+        Bank accessBank = new Bank("GTB");
+        accessBank.registerCustomer("Joshua", "mike", "1001");
+        accessBank.deposit(accessBank.getCustomerAccountNumber("Joshua", "mike"), 25000);
+        assertThrows(InvalidAccountException.class, () -> accessBank.transfer(accessBank.getCustomerAccountNumber("Joshua", "mike"), accessBank.getCustomerAccountNumber("Joshua", "mike"), 50_000, "1001"));
+        assertEquals(25000, accessBank.checkBalance(accessBank.getCustomerAccountNumber("Joshua", "mike"), "1001"));
+    }
+    @Test
+    public void testThatAccountCanBeFoundWithUniqueAccountNumber() {
+        Bank accessBank = new Bank("GTB");
+        accessBank.registerCustomer("Joshua", "mike", "1001");
+        accessBank.registerCustomer("Samuel", "Sharon", "1001");
+       assertThrows(AccountNotFoundException.class,() -> accessBank.findAccount(accessBank.getCustomerAccountNumber("Samuel", "cynthia")));
+
+    }
+
+}

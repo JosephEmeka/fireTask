@@ -66,4 +66,5 @@ public class DoubleArray {
         return resultMinMax;
     }
 
+    
 }
